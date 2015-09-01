@@ -1,0 +1,4 @@
+<resources>
+    <integer name="grid_column_count">5</integer>
+    <dimen name="image_size">120dp</dimen>
+</resources>

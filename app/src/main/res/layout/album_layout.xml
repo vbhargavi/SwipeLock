@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@drawable/image_background"
+             android:padding="2dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/image_size">
+
+        <ImageView
+            android:id="@+id/image_imageview"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/image_size"
+            android:scaleType="centerCrop"/>
+
+        <TextView
+            android:id="@+id/album_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:padding="5dp"
+            android:textSize="14sp"
+            android:text="Album NAme"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:background="@color/action_bar_semi_transparent"
+            android:textColor="@color/white"/>
+
+    </RelativeLayout>
+
+</FrameLayout>
