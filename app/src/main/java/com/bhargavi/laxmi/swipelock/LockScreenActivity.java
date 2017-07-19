@@ -1,12 +1,19 @@
 package com.bhargavi.laxmi.swipelock;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
@@ -19,10 +26,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bhargavi.laxmi.swipelock.data.ImageDataManager;
 
 public class LockScreenActivity extends AppCompatActivity implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+
     public static final String EXTRA_CHANGE_PIN = "is_change_pin";
 
     public static final String PIN = "com.bhargavi.laxmi.piclock.Pin";
@@ -60,7 +70,9 @@ public class LockScreenActivity extends AppCompatActivity implements View.OnClic
         }
 
         if (!isChangePin) {
-            getSupportLoaderManager().initLoader(500, null, this);
+            if (checkPermission()) {
+                getSupportLoaderManager().initLoader(500, null, this);
+            }
         } else {
             createTextView.setVisibility(View.VISIBLE);
             buttonsView.setVisibility(View.VISIBLE);
@@ -112,6 +124,50 @@ public class LockScreenActivity extends AppCompatActivity implements View.OnClic
 
     }
 
+    private boolean checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                showDialog("External storage", this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private void showDialog(final String msg, final Context context,
+                            final String permission) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
+        alertBuilder.setCancelable(true);
+        alertBuilder.setTitle("Permission necessary");
+        alertBuilder.setMessage(msg + " permission is necessary");
+        alertBuilder.setPositiveButton(android.R.string.yes,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(LockScreenActivity.this,
+                                new String[]{permission},
+                                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                    }
+                });
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getSupportLoaderManager().initLoader(500, null, this);
+            } else {
+                Toast.makeText(this, "Permission is required!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -138,32 +194,23 @@ public class LockScreenActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         if (v.getId() == R.id.button_0) {
             pinTxt.append("0");
-        }
-        else if (v.getId() == R.id.button_1) {
+        } else if (v.getId() == R.id.button_1) {
             pinTxt.append("1");
-        }
-        else if (v.getId() == R.id.button_2) {
+        } else if (v.getId() == R.id.button_2) {
             pinTxt.append("2");
-        }
-        else if (v.getId() == R.id.button_3) {
+        } else if (v.getId() == R.id.button_3) {
             pinTxt.append("3");
-        }
-        else if (v.getId() == R.id.button_4) {
+        } else if (v.getId() == R.id.button_4) {
             pinTxt.append("4");
-        }
-        else if (v.getId() == R.id.button_5) {
+        } else if (v.getId() == R.id.button_5) {
             pinTxt.append("5");
-        }
-        else if (v.getId() == R.id.button_6) {
+        } else if (v.getId() == R.id.button_6) {
             pinTxt.append("6");
-        }
-        else if (v.getId() == R.id.button_7) {
+        } else if (v.getId() == R.id.button_7) {
             pinTxt.append("7");
-        }
-        else if (v.getId() == R.id.button_8) {
+        } else if (v.getId() == R.id.button_8) {
             pinTxt.append("8");
-        }
-        else if (v.getId() == R.id.button_9) {
+        } else if (v.getId() == R.id.button_9) {
             pinTxt.append("9");
         }
 
